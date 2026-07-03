@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ledger — Employee Expense Management</title>
+<title>Ledger &#8212; Employee Expense Management</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -211,8 +212,8 @@
     <div class="hero-inner">
       <div class="eyebrow">// Expense operations</div>
       <h1>Every claim, tracked from receipt to reimbursement.</h1>
-      <p>Ledger gives employees a fast way to file expenses and gives managers a single queue to approve, reject, and pay them — no spreadsheets, no email threads.</p>
-      <button class="btn btn-emerald" onclick="showPage('signup')">Get started — it's free <i class="bi bi-arrow-right"></i></button>
+      <p>Ledger gives employees a fast way to file expenses and gives managers a single queue to approve, reject, and pay them &#8212; no spreadsheets, no email threads.</p>
+      <button class="btn btn-emerald" onclick="showPage('signup')">Get started &#8212; it's free <i class="bi bi-arrow-right"></i></button>
       <div class="stat-strip">
         <div><div class="n">01</div><div class="l">File a claim</div></div>
         <div><div class="n">02</div><div class="l">Manager reviews</div></div>
@@ -237,7 +238,7 @@
   </section>
 
   <footer class="footer-auth">
-    <span>© 2026 Ledger — Employee Expense Management</span>
+    <span>&#169; 2026 Ledger &#8212; Employee Expense Management</span>
     <span>Built for finance teams and the people who file with them</span>
   </footer>
 </div>
@@ -254,14 +255,14 @@
     <div class="auth-card">
       <div class="eyebrow">// Welcome back</div>
       <h2>Log in to your account</h2>
-      <div class="demo-box">Try it instantly — <b>manager</b> / <b>manager123</b> (Approvals access) or <b>employee</b> / <b>employee123</b>.</div>
+      <div class="demo-box">Try it instantly &#8212; <b>manager</b> / <b>manager123</b> (Approvals access) or <b>employee</b> / <b>employee123</b>.</div>
       <div class="field">
         <label>Username</label>
         <input id="loginUser" placeholder="e.g. employee">
       </div>
       <div class="field">
         <label>Password</label>
-        <input id="loginPass" type="password" placeholder="••••••••">
+        <input id="loginPass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;">
         <div class="err" id="loginErr">Incorrect username or password.</div>
       </div>
       <button class="btn btn-primary btn-block" onclick="login()">Log in <i class="bi bi-arrow-right"></i></button>
@@ -297,8 +298,8 @@
       <div class="field">
         <label>Role</label>
         <select id="newRole">
-          <option value="employee">Employee — files expenses</option>
-          <option value="manager">Manager — approves & pays expenses</option>
+          <option value="employee">Employee &#8212; files expenses</option>
+          <option value="manager">Manager &#8212; approves & pays expenses</option>
         </select>
       </div>
       <div class="err" id="signupErr">Please fill every field with a username that isn't taken.</div>
@@ -325,7 +326,7 @@
     <a href="#" class="nav-link" data-page="settings" onclick="dash('settings')"><i class="bi bi-gear"></i> Settings</a>
 
     <div class="nav-bottom">
-      <div style="font-size:13px;font-weight:600;color:#fff" id="sideUserName">—</div>
+      <div style="font-size:13px;font-weight:600;color:#fff" id="sideUserName">&#8212;</div>
       <span class="role-chip" id="sideRoleChip">role</span>
       <a href="#" class="nav-link" style="padding-left:0;margin-top:12px" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Log out</a>
     </div>
@@ -342,10 +343,10 @@
       </div>
       <div class="who">
         <div style="text-align:right">
-          <div style="font-size:13.5px;font-weight:600" id="topUserName">—</div>
-          <div style="font-size:11.5px;color:var(--ink-soft)" id="topUserRole">—</div>
+          <div style="font-size:13.5px;font-weight:600" id="topUserName">&#8212;</div>
+          <div style="font-size:11.5px;color:var(--ink-soft)" id="topUserRole">&#8212;</div>
         </div>
-        <div class="avatar" id="topAvatar">—</div>
+        <div class="avatar" id="topAvatar">&#8212;</div>
       </div>
     </div>
 
@@ -354,7 +355,7 @@
       <!-- DASHBOARD -->
       <div id="dashboard" class="dashpage active">
         <div class="stat-grid">
-          <div class="stat-card"><div class="bar" style="background:var(--ink)"></div><div class="l">Total filed</div><div class="v mono" id="statTotal">₹0</div><div class="d" id="statTotalD">0 claims</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--ink)"></div><div class="l">Total filed</div><div class="v mono" id="statTotal">&#8377;0</div><div class="d" id="statTotalD">0 claims</div></div>
           <div class="stat-card"><div class="bar" style="background:var(--amber)"></div><div class="l">Pending</div><div class="v mono" id="statPending">0</div><div class="d">awaiting decision</div></div>
           <div class="stat-card"><div class="bar" style="background:var(--emerald)"></div><div class="l">Approved</div><div class="v mono" id="statApproved">0</div><div class="d">cleared for payment</div></div>
           <div class="stat-card"><div class="bar" style="background:var(--brick)"></div><div class="l">Rejected</div><div class="v mono" id="statRejected">0</div><div class="d">declined claims</div></div>
@@ -405,7 +406,7 @@
                 </select>
               </div>
               <div class="field">
-                <label>Amount (₹)</label>
+                <label>Amount (&#8377;)</label>
                 <input id="eamount" type="number" min="1" placeholder="e.g. 2500">
               </div>
               <div class="field full">
@@ -441,7 +442,7 @@
       <div id="payments" class="dashpage">
         <div class="panel">
           <div class="panel-head">
-            <h4>Approved claims — payment status</h4>
+            <h4>Approved claims &#8212; payment status</h4>
             <span class="badge badge-unpaid" id="paymentsCount">0 unpaid</span>
           </div>
           <table>
@@ -483,7 +484,7 @@
               </div>
               <div class="field full">
                 <label>New password <span style="font-weight:400;color:var(--ink-soft)">(leave blank to keep current)</span></label>
-                <input id="setPass" type="password" placeholder="••••••••">
+                <input id="setPass" type="password" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;">
               </div>
             </div>
             <button class="btn btn-primary" onclick="saveSettings()"><i class="bi bi-check-lg"></i> Save changes</button>
@@ -500,7 +501,7 @@
 <script>
 /* =========================================================
    IN-MEMORY APPLICATION STATE
-   (no localStorage — state lives for this session only)
+   (no localStorage \u2014 state lives for this session only)
 ========================================================= */
 let users = [
   {username:'manager', password:'manager123', name:'Priya Sharma', role:'manager'},
@@ -508,7 +509,7 @@ let users = [
 ];
 
 let expenses = [
-  {id:1, username:'employee', type:'Travel', amount:4200, description:'Client visit — Bengaluru round trip', date:'2026-06-18', status:'Pending', payment:'Unpaid'},
+  {id:1, username:'employee', type:'Travel', amount:4200, description:'Client visit \u2014 Bengaluru round trip', date:'2026-06-18', status:'Pending', payment:'Unpaid'},
   {id:2, username:'employee', type:'Meals & entertainment', amount:1150, description:'Team lunch with vendor', date:'2026-06-21', status:'Approved', payment:'Unpaid'},
   {id:3, username:'employee', type:'Software & subscriptions', amount:2599, description:'Design tool annual license', date:'2026-06-25', status:'Approved', payment:'Paid'},
   {id:4, username:'employee', type:'Office supplies', amount:640, description:'Notebooks and desk organizers', date:'2026-06-29', status:'Rejected', payment:'Unpaid'}
@@ -539,7 +540,7 @@ function signup(){
   }
   err.style.display='none';
   users.push({username:uname, password:pass, name:name, role:role});
-  toast('Account created — log in to continue', 'ok');
+  toast('Account created \u2014 log in to continue', 'ok');
   document.getElementById('loginUser').value = uname;
   document.getElementById('newName').value='';
   document.getElementById('newUser').value='';
@@ -629,7 +630,7 @@ function nameFor(username){
   const u = users.find(x=>x.username===username);
   return u ? u.name : username;
 }
-function fmt(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function fmt(n){ return '\u20B9' + Number(n).toLocaleString('en-IN'); }
 function statusBadge(s){
   const map = {Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected'};
   return `<span class="badge ${map[s]}"><span class="dot"></span>${s}</span>`;
@@ -663,7 +664,7 @@ function renderDashboard(){
   document.getElementById('statApproved').innerText = approved;
   document.getElementById('statRejected').innerText = rejected;
 
-  document.getElementById('recentTitle').innerText = currentUser.role==='manager' ? 'Recent expenses — all employees' : 'Your recent expenses';
+  document.getElementById('recentTitle').innerText = currentUser.role==='manager' ? 'Recent expenses \u2014 all employees' : 'Your recent expenses';
 
   const recent = [...list].sort((a,b)=> b.id - a.id).slice(0,5);
   const body = document.getElementById('recentBody');
@@ -691,7 +692,7 @@ function renderExpenses(){
       <td>${statusBadge(e.status)}</td>
       <td>${paymentBadge(e.payment)}</td>
       <td>${e.date}</td>
-    </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No expenses to show yet — file your first one.</td></tr>`;
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No expenses to show yet \u2014 file your first one.</td></tr>`;
 }
 
 function renderApprovals(){
@@ -712,7 +713,7 @@ function renderApprovals(){
           <button class="btn btn-danger-ghost btn-sm" onclick="decide(${e.id},'Rejected')"><i class="bi bi-x-lg"></i> Reject</button>
         </div>
       </td>
-    </tr>`).join('') : `<tr class="empty-row"><td colspan="6">Nothing waiting on you — the queue is clear.</td></tr>`;
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="6">Nothing waiting on you \u2014 the queue is clear.</td></tr>`;
 }
 
 function renderPayments(){
