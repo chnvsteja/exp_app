@@ -3,413 +3,835 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Employee Expense Management System</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>Ledger — Employee Expense Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <style>
-body{font-family:'Segoe UI',sans-serif;background:#f5f7fb;min-height:100vh;display:flex;flex-direction:column}
-.hero{padding:80px 40px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
-.section{padding:60px 20px;flex:1}
-.card-custom{border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.1)}
-.sidebar{width:250px;height:100vh;background:#1f2937;color:#fff;position:fixed;top:0;left:0;display:none;z-index:1000}
-.sidebar a{display:block;color:#cbd5e1;padding:12px 20px;text-decoration:none}
-.sidebar a:hover, .sidebar a.active{background:#4f46e5;color:#fff}
-.main{margin-left:250px;display:none;min-height:100vh;background:#f5f7fb}
-.topbar{height:60px;background:#fff;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:center;padding:0 20px}
-.page{display:none}
-.page.active{display:block}
-.footer{background:#1e293b;color:#fff;padding:20px;text-align:center;margin-top:auto}
+  :root{
+    --ink:#0F2136;
+    --ink-soft:#42556B;
+    --surface:#F6F7F9;
+    --panel:#FFFFFF;
+    --line:#E3E7ED;
+    --emerald:#1F6D4C;
+    --emerald-soft:#E5F2EB;
+    --amber:#9A6B12;
+    --amber-soft:#FBF1DE;
+    --brick:#A63C46;
+    --brick-soft:#FBEAEC;
+    --slate-chip:#EEF1F5;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(15,33,54,.04), 0 8px 24px rgba(15,33,54,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Inter',sans-serif;color:var(--ink);background:var(--surface);-webkit-font-smoothing:antialiased}
+  h1,h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em}
+  .mono{font-family:'JetBrains Mono',monospace}
+  a{text-decoration:none}
+  button{font-family:inherit;cursor:pointer}
+  ::selection{background:var(--emerald-soft)}
+
+  /* ---------- Buttons ---------- */
+  .btn{border:1px solid transparent;border-radius:8px;padding:10px 18px;font-weight:600;font-size:14.5px;transition:.15s ease;display:inline-flex;align-items:center;gap:8px;}
+  .btn-primary{background:var(--ink);color:#fff}
+  .btn-primary:hover{background:#1c3350}
+  .btn-emerald{background:var(--emerald);color:#fff}
+  .btn-emerald:hover{background:#175639}
+  .btn-outline{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-outline:hover{background:var(--slate-chip)}
+  .btn-danger-ghost{background:transparent;color:var(--brick);border-color:var(--brick-soft)}
+  .btn-danger-ghost:hover{background:var(--brick-soft)}
+  .btn-sm{padding:6px 12px;font-size:13px;border-radius:6px}
+  .btn-block{width:100%;justify-content:center}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+
+  /* ---------- Inputs ---------- */
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+  .field input,.field select,.field textarea{
+    width:100%;border:1px solid var(--line);border-radius:8px;padding:11px 13px;font-size:14.5px;
+    font-family:inherit;background:#fff;color:var(--ink);transition:.15s;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--emerald);box-shadow:0 0 0 3px var(--emerald-soft)}
+  .err{color:var(--brick);font-size:13px;margin-top:6px;display:none}
+
+  /* ---------- Page control ---------- */
+  .page{display:none}
+  .page.active{display:block}
+
+  /* =========================================================
+     AUTH / MARKETING
+     ========================================================= */
+  .auth-nav{display:flex;align-items:center;justify-content:space-between;padding:22px 48px;border-bottom:1px solid var(--line);background:#fff}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:19px}
+  .brand .mark{width:30px;height:30px;border-radius:7px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .hero{background:var(--ink);color:#fff;padding:100px 48px 90px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-120px;top:-120px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(31,109,76,.35),transparent 70%)}
+  .hero-inner{max-width:640px;position:relative}
+  .eyebrow{font-family:'JetBrains Mono';font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:#8fd6b3;margin-bottom:18px}
+  .hero h1{font-size:46px;line-height:1.08;margin:0 0 20px}
+  .hero p{font-size:17px;color:#C6D0DC;line-height:1.6;margin-bottom:32px;max-width:520px}
+  .stat-strip{display:flex;gap:0;border-top:1px solid rgba(255,255,255,.15);margin-top:64px;padding-top:28px;max-width:640px}
+  .stat-strip div{flex:1;border-left:1px solid rgba(255,255,255,.15);padding-left:20px}
+  .stat-strip div:first-child{border-left:none;padding-left:0}
+  .stat-strip .n{font-family:'JetBrains Mono';font-size:24px;font-weight:600;color:#fff}
+  .stat-strip .l{font-size:12.5px;color:#93A2B4;margin-top:4px}
+
+  .section{padding:72px 48px;max-width:1180px;margin:0 auto}
+  .section-head{max-width:520px;margin-bottom:44px}
+  .section-head .eyebrow{color:var(--emerald)}
+  .section-head h2{font-size:28px;margin:8px 0 10px}
+  .section-head p{color:var(--ink-soft);font-size:15px;line-height:1.6}
+  .flow-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fff}
+  .flow-step{padding:26px 22px;border-right:1px solid var(--line);position:relative}
+  .flow-step:last-child{border-right:none}
+  .flow-step .num{font-family:'JetBrains Mono';font-size:12px;color:var(--emerald);font-weight:600}
+  .flow-step h4{font-size:15.5px;margin:10px 0 6px}
+  .flow-step p{font-size:13.5px;color:var(--ink-soft);line-height:1.55;margin:0}
+  .flow-step .bi{position:absolute;top:24px;right:20px;color:var(--line);font-size:18px}
+
+  .footer-auth{padding:26px 48px;border-top:1px solid var(--line);display:flex;justify-content:space-between;color:var(--ink-soft);font-size:13px;background:#fff}
+
+  .auth-wrap{min-height:calc(100vh - 78px);display:flex;align-items:center;justify-content:center;background:var(--surface);padding:40px 20px}
+  .auth-card{width:100%;max-width:400px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:36px 32px}
+  .auth-card .eyebrow{color:var(--emerald)}
+  .auth-card h2{font-size:23px;margin:6px 0 26px}
+  .switcher{text-align:center;font-size:13.5px;color:var(--ink-soft);margin-top:18px}
+  .switcher a{color:var(--emerald);font-weight:600}
+  .demo-box{background:var(--slate-chip);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--ink-soft);margin-bottom:22px;line-height:1.6}
+  .demo-box b{color:var(--ink)}
+
+  /* =========================================================
+     APP SHELL
+     ========================================================= */
+  .app{display:none;min-height:100vh}
+  .sidebar{width:236px;background:var(--ink);color:#C9D3DF;position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;padding:22px 0}
+  .sidebar .brand{color:#fff;padding:0 22px 24px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px}
+  .nav-group-label{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:#647084;padding:14px 22px 8px}
+  .nav-link{display:flex;align-items:center;gap:12px;padding:10px 22px;font-size:14px;font-weight:500;color:#C9D3DF;border-left:3px solid transparent}
+  .nav-link .bi{font-size:16px;width:18px;text-align:center}
+  .nav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav-link.active{background:rgba(31,109,76,.22);color:#fff;border-left-color:var(--emerald)}
+  .nav-bottom{margin-top:auto;padding:14px 22px 0;border-top:1px solid rgba(255,255,255,.1)}
+  .role-chip{display:inline-block;font-family:'JetBrains Mono';font-size:10.5px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.12);color:#C9D3DF;margin-top:4px}
+
+  .main{margin-left:236px}
+  .topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:5}
+  .topbar h3{font-size:18px;margin:0}
+  .topbar .sub{font-size:12.5px;color:var(--ink-soft);margin-top:1px}
+  .who{display:flex;align-items:center;gap:10px}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--emerald-soft);color:var(--emerald);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:'Space Grotesk'}
+  .content{padding:30px}
+  .dashpage{display:none}
+  .dashpage.active{display:block}
+
+  /* Cards / stats */
+  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+  .stat-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+  .stat-card .bar{position:absolute;left:0;top:0;bottom:0;width:4px}
+  .stat-card .l{font-size:12.5px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  .stat-card .v{font-family:'JetBrains Mono';font-size:26px;font-weight:600;margin-top:8px}
+  .stat-card .d{font-size:12px;color:var(--ink-soft);margin-top:4px}
+
+  .panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .panel-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .panel-head h4{margin:0;font-size:15.5px}
+  .panel-body{padding:22px}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);padding:10px 22px;border-bottom:1px solid var(--line);background:var(--surface)}
+  tbody td{padding:14px 22px;border-bottom:1px solid var(--line);font-size:14px}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--surface)}
+  .empty-row td{text-align:center;color:var(--ink-soft);padding:40px 20px;font-size:14px}
+
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:20px}
+  .badge-pending{background:var(--amber-soft);color:var(--amber)}
+  .badge-approved{background:var(--emerald-soft);color:var(--emerald)}
+  .badge-rejected{background:var(--brick-soft);color:var(--brick)}
+  .badge-paid{background:#E7EEFB;color:#2A4E8C}
+  .badge-unpaid{background:var(--slate-chip);color:var(--ink-soft)}
+  .badge dot{}
+  .badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+  .form-grid .full{grid-column:1/-1}
+
+  .bar-chart{display:flex;flex-direction:column;gap:14px}
+  .bar-row{display:grid;grid-template-columns:120px 1fr 70px;align-items:center;gap:12px}
+  .bar-row .lbl{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .bar-track{height:10px;background:var(--slate-chip);border-radius:6px;overflow:hidden}
+  .bar-fill{height:100%;background:var(--emerald);border-radius:6px}
+  .bar-row .amt{font-family:'JetBrains Mono';font-size:12.5px;text-align:right}
+
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .toast{position:fixed;bottom:26px;right:26px;background:var(--ink);color:#fff;padding:13px 20px;border-radius:8px;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;opacity:0;transform:translateY(10px);transition:.25s;z-index:50;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .toast.ok{background:var(--emerald)}
+  .toast.bad{background:var(--brick)}
+
+  .empty-state{text-align:center;padding:56px 20px;color:var(--ink-soft)}
+  .empty-state .bi{font-size:34px;color:var(--line);margin-bottom:14px;display:block}
+  .empty-state h5{color:var(--ink);margin-bottom:6px}
+  .empty-state p{font-size:13.5px;margin-bottom:18px}
+
+  .action-row{display:flex;gap:8px}
+
+  @media (max-width:960px){
+    .stat-grid{grid-template-columns:repeat(2,1fr)}
+    .flow-row{grid-template-columns:1fr;}
+    .flow-step{border-right:none;border-bottom:1px solid var(--line)}
+    .form-grid{grid-template-columns:1fr}
+    .settings-grid{grid-template-columns:1fr}
+    .hero h1{font-size:34px}
+    .sidebar{transform:translateX(-100%);transition:.2s;z-index:40}
+    .sidebar.open{transform:translateX(0)}
+    .main{margin-left:0}
+    .menu-btn{display:inline-flex !important}
+  }
+  .menu-btn{display:none;background:none;border:none;font-size:20px;color:var(--ink)}
 </style>
 </head>
 <body>
 
-<div id="public-wrapper">
-    <div id="landing" class="page active">
-        <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4">
-            <div class="container-fluid">
-                <h4 class="fw-bold text-primary mb-0"><i class="bi bi-wallet2"></i> Expense Tracker</h4>
-                <div class="ms-auto">
-                    <button class="btn btn-outline-dark me-2" onclick="showPage('login')">Login</button>
-                    <button class="btn btn-primary" onclick="showPage('signup')">Sign Up</button>
-                </div>
-            </div>
-        </nav>
-
-        <section class="hero text-center">
-            <div class="container">
-                <h1 class="display-4 fw-bold">Expense Management <span class="text-warning">System</span></h1>
-                <p class="lead">Track expenses, manage approvals, and accelerate reimbursements efficiently.</p>
-                <button class="btn btn-light btn-lg mt-3" onclick="showPage('signup')">Get Started</button>
-            </div>
-        </section>
-
-        <section class="section">
-            <div class="container">
-                <div class="row g-4">
-                    <div class="col-md-4"><div class="card card-custom p-4 text-center h-100"><i class="bi bi-receipt fs-1 text-primary mb-2"></i><h5>Track Expenses</h5><p class="text-muted small">Log and track items easily with itemized inputs.</p></div></div>
-                    <div class="col-md-4"><div class="card card-custom p-4 text-center h-100"><i class="bi bi-check2-circle fs-1 text-success mb-2"></i><h5>Instant Approvals</h5><p class="text-muted small">Process logs instantly through status dashboards.</p></div></div>
-                    <div class="col-md-4"><div class="card card-custom p-4 text-center h-100"><i class="bi bi-bar-chart fs-1 text-warning mb-2"></i><h5>Analytics Reports</h5><p class="text-muted small">Check real-time spend distributions anytime.</p></div></div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="footer">©2026 Employee Expense Management System</footer>
+<!-- ============================================================
+     LANDING
+============================================================ -->
+<div id="landing" class="page active">
+  <nav class="auth-nav">
+    <div class="brand"><span class="mark"><i class="bi bi-book"></i></span>Ledger</div>
+    <div>
+      <button class="btn btn-outline btn-sm" onclick="showPage('login')">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="showPage('signup')">Create account</button>
     </div>
+  </nav>
 
-    <div id="login" class="page container py-5" style="max-width:420px">
-        <div class="card p-4 shadow-sm border-0">
-            <h3 class="text-center mb-3 fw-bold">Login</h3>
-            <input id="loginUser" class="form-control mb-3" placeholder="Username">
-            <input id="loginPass" type="password" class="form-control mb-3" placeholder="Password">
-            <button class="btn btn-primary w-100" onclick="login()">Login</button>
-            <p class="text-center mt-3 mb-0"><a href="#" onclick="showPage('signup')" class="text-decoration-none">Create account</a></p>
-            <p class="text-center mt-2 mb-0"><a href="#" onclick="showPage('landing')" class="text-muted small text-decoration-none"><i class="bi bi-arrow-left"></i> Back Home</a></p>
-        </div>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">// Expense operations</div>
+      <h1>Every claim, tracked from receipt to reimbursement.</h1>
+      <p>Ledger gives employees a fast way to file expenses and gives managers a single queue to approve, reject, and pay them — no spreadsheets, no email threads.</p>
+      <button class="btn btn-emerald" onclick="showPage('signup')">Get started — it's free <i class="bi bi-arrow-right"></i></button>
+      <div class="stat-strip">
+        <div><div class="n">01</div><div class="l">File a claim</div></div>
+        <div><div class="n">02</div><div class="l">Manager reviews</div></div>
+        <div><div class="n">03</div><div class="l">Approve or reject</div></div>
+        <div><div class="n">04</div><div class="l">Mark as paid</div></div>
+      </div>
     </div>
+  </section>
 
-    <div id="signup" class="page container py-5" style="max-width:420px">
-        <div class="card p-4 shadow-sm border-0">
-            <h3 class="text-center mb-3 fw-bold">Sign Up</h3>
-            <input id="newUser" class="form-control mb-3" placeholder="Username">
-            <input id="newPass" type="password" class="form-control mb-3" placeholder="Password">
-            <button class="btn btn-success w-100" onclick="signup()">Register</button>
-            <p class="text-center mt-3 mb-0"><a href="#" onclick="showPage('login')" class="text-decoration-none">Already have an account? Login</a></p>
-        </div>
+  <section class="section">
+    <div class="section-head">
+      <div class="eyebrow">// How it works</div>
+      <h2>One queue. No back-and-forth.</h2>
+      <p>Every expense moves through the same four stages, visible to both the person who filed it and the person approving it.</p>
     </div>
+    <div class="flow-row">
+      <div class="flow-step"><i class="bi bi-pencil-square"></i><div class="num">01</div><h4>Submit</h4><p>Employees log the type, amount and description of a business expense in under a minute.</p></div>
+      <div class="flow-step"><i class="bi bi-hourglass-split"></i><div class="num">02</div><h4>Pending review</h4><p>The claim sits in the manager's approvals queue until it's actioned.</p></div>
+      <div class="flow-step"><i class="bi bi-check2-circle"></i><div class="num">03</div><h4>Decision</h4><p>A manager approves or rejects, with the status reflected instantly for the employee.</p></div>
+      <div class="flow-step"><i class="bi bi-cash-coin"></i><div class="num">04</div><h4>Payment</h4><p>Approved claims are marked paid once reimbursement is issued.</p></div>
+    </div>
+  </section>
+
+  <footer class="footer-auth">
+    <span>© 2026 Ledger — Employee Expense Management</span>
+    <span>Built for finance teams and the people who file with them</span>
+  </footer>
 </div>
 
-<div class="sidebar" id="sidebar">
-    <h4 class="py-3 text-center border-bottom border-secondary fw-bold"><i class="bi bi-wallet2"></i> Expense</h4>
-    <a href="#" id="lnk-dashboard" onclick="dash('dashboard')" class="active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-    <a href="#" id="lnk-expenses" onclick="dash('expenses')"><i class="bi bi-list-ul me-2"></i> Expenses</a>
-    <a href="#" id="lnk-create" onclick="dash('create')"><i class="bi bi-plus-circle me-2"></i> Create Expense</a>
-    <a href="#" id="lnk-approvals" onclick="dash('approvals')"><i class="bi bi-shield-check me-2"></i> Approvals</a>
-    <a href="#" id="lnk-payments" onclick="dash('payments')"><i class="bi bi-cash-stack me-2"></i> Payments</a>
-    <a href="#" id="lnk-reports" onclick="dash('reports')"><i class="bi bi-graph-up-arrow me-2"></i> Reports</a>
-    <a href="#" id="lnk-settings" onclick="dash('settings')"><i class="bi bi-gear me-2"></i> Settings</a>
-    <a href="#" onclick="logout()" class="text-danger mt-5"><i class="bi bi-box-arrow-left me-2"></i> Logout</a>
+<!-- ============================================================
+     LOGIN
+============================================================ -->
+<div id="login" class="page">
+  <nav class="auth-nav">
+    <div class="brand" style="cursor:pointer" onclick="showPage('landing')"><span class="mark"><i class="bi bi-book"></i></span>Ledger</div>
+    <button class="btn btn-outline btn-sm" onclick="showPage('landing')"><i class="bi bi-arrow-left"></i> Back</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="eyebrow">// Welcome back</div>
+      <h2>Log in to your account</h2>
+      <div class="demo-box">Try it instantly — <b>manager</b> / <b>manager123</b> (Approvals access) or <b>employee</b> / <b>employee123</b>.</div>
+      <div class="field">
+        <label>Username</label>
+        <input id="loginUser" placeholder="e.g. employee">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="loginPass" type="password" placeholder="••••••••">
+        <div class="err" id="loginErr">Incorrect username or password.</div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="login()">Log in <i class="bi bi-arrow-right"></i></button>
+      <div class="switcher">No account yet? <a href="#" onclick="showPage('signup')">Create one</a></div>
+    </div>
+  </div>
 </div>
 
-<div class="main" id="main">
-    <div class="topbar px-4 shadow-sm">
-        <h5 id="title" class="fw-bold m-0">Dashboard</h5>
-        <div class="fw-semibold text-secondary"><i class="bi bi-person-circle me-1 text-primary"></i> <span id="userLabel"></span></div>
+<!-- ============================================================
+     SIGNUP
+============================================================ -->
+<div id="signup" class="page">
+  <nav class="auth-nav">
+    <div class="brand" style="cursor:pointer" onclick="showPage('landing')"><span class="mark"><i class="bi bi-book"></i></span>Ledger</div>
+    <button class="btn btn-outline btn-sm" onclick="showPage('landing')"><i class="bi bi-arrow-left"></i> Back</button>
+  </nav>
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="eyebrow">// Get started</div>
+      <h2>Create your account</h2>
+      <div class="field">
+        <label>Full name</label>
+        <input id="newName" placeholder="Jordan Lee">
+      </div>
+      <div class="field">
+        <label>Username</label>
+        <input id="newUser" placeholder="Choose a username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="newPass" type="password" placeholder="At least 4 characters">
+      </div>
+      <div class="field">
+        <label>Role</label>
+        <select id="newRole">
+          <option value="employee">Employee — files expenses</option>
+          <option value="manager">Manager — approves & pays expenses</option>
+        </select>
+      </div>
+      <div class="err" id="signupErr">Please fill every field with a username that isn't taken.</div>
+      <button class="btn btn-emerald btn-block" onclick="signup()">Create account <i class="bi bi-arrow-right"></i></button>
+      <div class="switcher">Already registered? <a href="#" onclick="showPage('login')">Log in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     APP SHELL
+============================================================ -->
+<div class="app" id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="mark"><i class="bi bi-book"></i></span>Ledger</div>
+
+    <div class="nav-group-label">Workspace</div>
+    <a href="#" class="nav-link active" data-page="dashboard" onclick="dash('dashboard')"><i class="bi bi-grid-1x2"></i> Dashboard</a>
+    <a href="#" class="nav-link" data-page="expenses" onclick="dash('expenses')"><i class="bi bi-receipt"></i> Expenses</a>
+    <a href="#" class="nav-link" data-page="create" onclick="dash('create')"><i class="bi bi-plus-circle"></i> Create expense</a>
+    <a href="#" class="nav-link mgr-only" data-page="approvals" onclick="dash('approvals')"><i class="bi bi-check2-circle"></i> Approvals</a>
+    <a href="#" class="nav-link mgr-only" data-page="payments" onclick="dash('payments')"><i class="bi bi-cash-coin"></i> Payments</a>
+    <a href="#" class="nav-link" data-page="reports" onclick="dash('reports')"><i class="bi bi-bar-chart"></i> Reports</a>
+    <a href="#" class="nav-link" data-page="settings" onclick="dash('settings')"><i class="bi bi-gear"></i> Settings</a>
+
+    <div class="nav-bottom">
+      <div style="font-size:13px;font-weight:600;color:#fff" id="sideUserName">—</div>
+      <span class="role-chip" id="sideRoleChip">role</span>
+      <a href="#" class="nav-link" style="padding-left:0;margin-top:12px" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Log out</a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="menu-btn" onclick="sidebar.classList.toggle('open')"><i class="bi bi-list"></i></button>
+        <div>
+          <h3 id="pageTitle">Dashboard</h3>
+          <div class="sub" id="pageSub">Overview of your expense activity</div>
+        </div>
+      </div>
+      <div class="who">
+        <div style="text-align:right">
+          <div style="font-size:13.5px;font-weight:600" id="topUserName">—</div>
+          <div style="font-size:11.5px;color:var(--ink-soft)" id="topUserRole">—</div>
+        </div>
+        <div class="avatar" id="topAvatar">—</div>
+      </div>
     </div>
 
-    <div class="p-4">
-        <div id="dashboard" class="dashpage">
-            <div class="row g-3">
-                <div class="col-md-3"><div class="card p-3 border-0 shadow-sm border-start border-primary border-4"><h5>Total Expenses</h5><h2 id="statTotal" class="text-primary fw-bold">₹0</h2></div></div>
-                <div class="col-md-3"><div class="card p-3 border-0 shadow-sm border-start border-warning border-4"><h5>Pending</h5><h2 id="statPending" class="text-warning fw-bold">0</h2></div></div>
-                <div class="col-md-3"><div class="card p-3 border-0 shadow-sm border-start border-success border-4"><h5>Approved</h5><h2 id="statApproved" class="text-success fw-bold">0</h2></div></div>
-                <div class="col-md-3"><div class="card p-3 border-0 shadow-sm border-start border-danger border-4"><h5>Rejected</h5><h2 id="statRejected" class="text-danger fw-bold">0</h2></div></div>
-            </div>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div id="dashboard" class="dashpage active">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="bar" style="background:var(--ink)"></div><div class="l">Total filed</div><div class="v mono" id="statTotal">₹0</div><div class="d" id="statTotalD">0 claims</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--amber)"></div><div class="l">Pending</div><div class="v mono" id="statPending">0</div><div class="d">awaiting decision</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--emerald)"></div><div class="l">Approved</div><div class="v mono" id="statApproved">0</div><div class="d">cleared for payment</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--brick)"></div><div class="l">Rejected</div><div class="v mono" id="statRejected">0</div><div class="d">declined claims</div></div>
         </div>
 
-        <div id="expenses" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">My Expenses</h3>
-            <div class="card p-3 border-0 shadow-sm table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="expenseBody"></tbody>
-                </table>
-            </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h4 id="recentTitle">Recent expenses</h4>
+            <a href="#" class="btn btn-outline btn-sm" onclick="dash('expenses')">View all <i class="bi bi-arrow-right"></i></a>
+          </div>
+          <table>
+            <thead><tr><th>Type</th><th>Employee</th><th>Amount</th><th>Status</th><th>Payment</th><th>Date</th></tr></thead>
+            <tbody id="recentBody"></tbody>
+          </table>
         </div>
+      </div>
 
-        <div id="create" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">Create Expense</h3>
-            <div class="card p-4 border-0 shadow-sm" style="max-width: 500px;">
-                <label class="form-label font-weight-bold">Expense Type</label>
-                <select id="etype" class="form-select mb-3">
-                    <option value="Travel">Travel</option>
-                    <option value="Meals & Entertainment">Meals & Entertainment</option>
-                    <option value="Office Supplies">Office Supplies</option>
-                    <option value="Technology/Hardware">Technology & Hardware</option>
-                    <option value="Other">Other</option>
+      <!-- EXPENSES -->
+      <div id="expenses" class="dashpage">
+        <div class="panel">
+          <div class="panel-head">
+            <h4 id="expensesTitle">Your expenses</h4>
+            <button class="btn btn-primary btn-sm" onclick="dash('create')"><i class="bi bi-plus-lg"></i> New expense</button>
+          </div>
+          <table>
+            <thead><tr><th>Type</th><th>Employee</th><th>Amount</th><th>Description</th><th>Status</th><th>Payment</th><th>Date</th></tr></thead>
+            <tbody id="expenseBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CREATE -->
+      <div id="create" class="dashpage">
+        <div class="panel" style="max-width:640px">
+          <div class="panel-head"><h4>File a new expense</h4></div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <div class="field">
+                <label>Expense type</label>
+                <select id="etype">
+                  <option>Travel</option>
+                  <option>Meals & entertainment</option>
+                  <option>Office supplies</option>
+                  <option>Software & subscriptions</option>
+                  <option>Accommodation</option>
+                  <option>Client hospitality</option>
+                  <option>Other</option>
                 </select>
-                <label class="form-label">Amount (₹)</label>
-                <input id="eamount" type="number" class="form-control mb-3" placeholder="e.g. 1500">
-                <label class="form-label">Description</label>
-                <input id="edesc" class="form-control mb-4" placeholder="Brief note...">
-                <button class="btn btn-primary px-4" onclick="addExpense()">Submit Claim</button>
+              </div>
+              <div class="field">
+                <label>Amount (₹)</label>
+                <input id="eamount" type="number" min="1" placeholder="e.g. 2500">
+              </div>
+              <div class="field full">
+                <label>Description</label>
+                <textarea id="edesc" rows="3" placeholder="What was this for?"></textarea>
+              </div>
+              <div class="field full">
+                <label>Date incurred</label>
+                <input id="edate" type="date">
+              </div>
             </div>
+            <div class="err" id="createErr">Enter an expense type, a valid amount, and a description.</div>
+            <button class="btn btn-emerald" onclick="addExpense()"><i class="bi bi-send"></i> Submit for approval</button>
+          </div>
         </div>
+      </div>
 
-        <div id="approvals" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">Approvals Management</h3>
-            <div class="card p-3 border-0 shadow-sm table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="approvalsBody"></tbody>
-                </table>
-            </div>
+      <!-- APPROVALS (manager only) -->
+      <div id="approvals" class="dashpage">
+        <div class="panel">
+          <div class="panel-head">
+            <h4>Pending approvals</h4>
+            <span class="badge badge-pending" id="approvalsCount">0 pending</span>
+          </div>
+          <table>
+            <thead><tr><th>Employee</th><th>Type</th><th>Amount</th><th>Description</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="approvalsBody"></tbody>
+          </table>
         </div>
+      </div>
 
-        <div id="payments" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">Reimbursement Processing</h3>
-            <div class="card p-3 border-0 shadow-sm table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                        <tr>
-                            <th>User</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paymentsBody"></tbody>
-                </table>
-            </div>
+      <!-- PAYMENTS (manager only) -->
+      <div id="payments" class="dashpage">
+        <div class="panel">
+          <div class="panel-head">
+            <h4>Approved claims — payment status</h4>
+            <span class="badge badge-unpaid" id="paymentsCount">0 unpaid</span>
+          </div>
+          <table>
+            <thead><tr><th>Employee</th><th>Type</th><th>Amount</th><th>Approved on</th><th>Payment</th><th>Action</th></tr></thead>
+            <tbody id="paymentsBody"></tbody>
+          </table>
         </div>
+      </div>
 
-        <div id="reports" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">Reports Overview</h3>
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="card p-4 border-0 shadow-sm">
-                        <h5>Category Breakdown Summary</h5>
-                        <hr>
-                        <div id="reportSummary">No logs found to construct dynamic breakdown models.</div>
-                    </div>
-                </div>
-            </div>
+      <!-- REPORTS -->
+      <div id="reports" class="dashpage">
+        <div class="panel" style="margin-bottom:20px">
+          <div class="panel-head"><h4>Spend by category</h4></div>
+          <div class="panel-body">
+            <div class="bar-chart" id="categoryChart"></div>
+          </div>
         </div>
+        <div class="panel">
+          <div class="panel-head"><h4>Claims by status</h4></div>
+          <div class="panel-body">
+            <div class="bar-chart" id="statusChart"></div>
+          </div>
+        </div>
+      </div>
 
-        <div id="settings" class="dashpage" style="display:none">
-            <h3 class="fw-bold mb-3">Settings</h3>
-            <div class="card p-4 border-0 shadow-sm" style="max-width: 400px;">
-                <h5>User Configuration Profile</h5>
-                <p class="text-muted small">Standard configuration settings interface access.</p>
-                <hr>
-                <div class="mb-3">
-                    <label class="form-label small fw-bold">Security Context</label>
-                    <input type="text" class="form-control" value="Role: Global App Administrator" readonly>
-                </div>
-                <button class="btn btn-secondary btn-sm" onclick="alert('Settings configured successfully.')">Save Updates</button>
+      <!-- SETTINGS -->
+      <div id="settings" class="dashpage">
+        <div class="panel" style="max-width:640px">
+          <div class="panel-head"><h4>Profile settings</h4></div>
+          <div class="panel-body">
+            <div class="settings-grid">
+              <div class="field">
+                <label>Full name</label>
+                <input id="setName">
+              </div>
+              <div class="field">
+                <label>Username</label>
+                <input id="setUser" disabled>
+              </div>
+              <div class="field full">
+                <label>New password <span style="font-weight:400;color:var(--ink-soft)">(leave blank to keep current)</span></label>
+                <input id="setPass" type="password" placeholder="••••••••">
+              </div>
             </div>
+            <button class="btn btn-primary" onclick="saveSettings()"><i class="bi bi-check-lg"></i> Save changes</button>
+          </div>
         </div>
+      </div>
+
     </div>
+  </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-// Master Data Struct initialization via LocalStorage
-let expenses = JSON.parse(localStorage.getItem('expenses_array')) || [];
-let currentUser = sessionStorage.getItem('current_user') || "";
+/* =========================================================
+   IN-MEMORY APPLICATION STATE
+   (no localStorage — state lives for this session only)
+========================================================= */
+let users = [
+  {username:'manager', password:'manager123', name:'Priya Sharma', role:'manager'},
+  {username:'employee', password:'employee123', name:'Arjun Mehta', role:'employee'}
+];
 
-window.onload = function() {
-    if(currentUser) {
-        bootDashboard();
-    }
-};
+let expenses = [
+  {id:1, username:'employee', type:'Travel', amount:4200, description:'Client visit — Bengaluru round trip', date:'2026-06-18', status:'Pending', payment:'Unpaid'},
+  {id:2, username:'employee', type:'Meals & entertainment', amount:1150, description:'Team lunch with vendor', date:'2026-06-21', status:'Approved', payment:'Unpaid'},
+  {id:3, username:'employee', type:'Software & subscriptions', amount:2599, description:'Design tool annual license', date:'2026-06-25', status:'Approved', payment:'Paid'},
+  {id:4, username:'employee', type:'Office supplies', amount:640, description:'Notebooks and desk organizers', date:'2026-06-29', status:'Rejected', payment:'Unpaid'}
+];
+let nextId = 5;
+let currentUser = null;
 
+/* =========================================================
+   AUTH / PAGE ROUTING
+========================================================= */
 function showPage(id){
-    document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('loginErr').style.display='none';
+  document.getElementById('signupErr').style.display='none';
 }
 
 function signup(){
-    let user = document.getElementById("newUser").value.trim();
-    let pass = document.getElementById("newPass").value.trim();
-    if(!user || !pass) { alert("Please complete all registration parameters."); return; }
-    
-    localStorage.setItem("user_" + user, pass);
-    alert("Account Registered Successfully!");
-    showPage("login");
-    document.getElementById("newUser").value = "";
-    document.getElementById("newPass").value = "";
+  const name = document.getElementById('newName').value.trim();
+  const uname = document.getElementById('newUser').value.trim();
+  const pass = document.getElementById('newPass').value;
+  const role = document.getElementById('newRole').value;
+  const err = document.getElementById('signupErr');
+
+  if(!name || !uname || pass.length < 4 || users.find(u=>u.username===uname)){
+    err.style.display='block';
+    return;
+  }
+  err.style.display='none';
+  users.push({username:uname, password:pass, name:name, role:role});
+  toast('Account created — log in to continue', 'ok');
+  document.getElementById('loginUser').value = uname;
+  document.getElementById('newName').value='';
+  document.getElementById('newUser').value='';
+  document.getElementById('newPass').value='';
+  showPage('login');
 }
 
 function login(){
-    let user = document.getElementById("loginUser").value.trim();
-    let pass = document.getElementById("loginPass").value.trim();
-    
-    if(pass === localStorage.getItem("user_" + user) || (user === "admin" && pass === "admin")){
-        currentUser = user || "admin";
-        sessionStorage.setItem('current_user', currentUser);
-        bootDashboard();
-    } else { 
-        alert("Invalid Username or Password Credential Matches Found."); 
-    }
-}
+  const uname = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const found = users.find(u=>u.username===uname && u.password===pass);
+  const err = document.getElementById('loginErr');
 
-function bootDashboard() {
-    document.getElementById("public-wrapper").style.display = "none";
-    document.getElementById("sidebar").style.display = "block";
-    document.getElementById("main").style.display = "block";
-    document.getElementById("userLabel").innerText = currentUser;
-    renderAllEngineData();
-    dash('dashboard');
+  if(!found){
+    err.style.display='block';
+    return;
+  }
+  err.style.display='none';
+  currentUser = found;
+  enterApp();
 }
 
 function logout(){
-    sessionStorage.removeItem('current_user');
-    location.reload();
+  currentUser = null;
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+  showPage('landing');
 }
+
+function enterApp(){
+  document.getElementById('app').style.display='block';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+
+  const isManager = currentUser.role === 'manager';
+  document.querySelectorAll('.mgr-only').forEach(el=> el.style.display = isManager ? 'flex' : 'none');
+
+  document.getElementById('sideUserName').innerText = currentUser.name;
+  document.getElementById('sideRoleChip').innerText = currentUser.role;
+  document.getElementById('topUserName').innerText = currentUser.name;
+  document.getElementById('topUserRole').innerText = isManager ? 'Manager' : 'Employee';
+  document.getElementById('topAvatar').innerText = currentUser.name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+
+  document.getElementById('setName').value = currentUser.name;
+  document.getElementById('setUser').value = currentUser.username;
+  document.getElementById('setPass').value = '';
+
+  dash('dashboard');
+}
+
+/* =========================================================
+   NAVIGATION BETWEEN DASHBOARD PAGES
+========================================================= */
+const pageMeta = {
+  dashboard:{title:'Dashboard', sub:'Overview of your expense activity'},
+  expenses:{title:'Expenses', sub:'All claims you can see, in one list'},
+  create:{title:'Create expense', sub:'File a new claim for approval'},
+  approvals:{title:'Approvals', sub:'Review and action pending claims'},
+  payments:{title:'Payments', sub:'Track reimbursement for approved claims'},
+  reports:{title:'Reports', sub:'Spend broken down by category and status'},
+  settings:{title:'Settings', sub:'Manage your profile'}
+};
 
 function dash(id){
-    document.querySelectorAll(".dashpage").forEach(x=>x.style.display="none");
-    document.querySelectorAll(".sidebar a").forEach(x=>x.classList.remove("active"));
-    
-    document.getElementById(id).style.display = "block";
-    let activeLink = document.getElementById("lnk-" + id);
-    if(activeLink) activeLink.classList.add("active");
-    
-    document.getElementById("title").innerText = id.charAt(0).toUpperCase() + id.slice(1);
-    renderAllEngineData();
+  if(id==='approvals' || id==='payments'){
+    if(!currentUser || currentUser.role !== 'manager'){ toast('Manager access required', 'bad'); id='dashboard'; }
+  }
+  document.querySelectorAll('.dashpage').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(a=>a.classList.remove('active'));
+  const link = document.querySelector(`.nav-link[data-page="${id}"]`);
+  if(link) link.classList.add('active');
+  document.getElementById('pageTitle').innerText = pageMeta[id].title;
+  document.getElementById('pageSub').innerText = pageMeta[id].sub;
+  sidebar.classList.remove('open');
+  renderAll();
 }
 
+/* =========================================================
+   DATA HELPERS
+========================================================= */
+function visibleExpenses(){
+  if(currentUser.role === 'manager') return expenses;
+  return expenses.filter(e=>e.username===currentUser.username);
+}
+function nameFor(username){
+  const u = users.find(x=>x.username===username);
+  return u ? u.name : username;
+}
+function fmt(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function statusBadge(s){
+  const map = {Pending:'badge-pending', Approved:'badge-approved', Rejected:'badge-rejected'};
+  return `<span class="badge ${map[s]}"><span class="dot"></span>${s}</span>`;
+}
+function paymentBadge(p){
+  return `<span class="badge ${p==='Paid'?'badge-paid':'badge-unpaid'}"><span class="dot"></span>${p}</span>`;
+}
+
+/* =========================================================
+   RENDER: everything reflows off `expenses` + `currentUser`
+========================================================= */
+function renderAll(){
+  if(!currentUser) return;
+  renderDashboard();
+  renderExpenses();
+  renderApprovals();
+  renderPayments();
+  renderReports();
+}
+
+function renderDashboard(){
+  const list = visibleExpenses();
+  const total = list.reduce((s,e)=>s+Number(e.amount),0);
+  const pending = list.filter(e=>e.status==='Pending').length;
+  const approved = list.filter(e=>e.status==='Approved').length;
+  const rejected = list.filter(e=>e.status==='Rejected').length;
+
+  document.getElementById('statTotal').innerText = fmt(total);
+  document.getElementById('statTotalD').innerText = list.length + ' claim' + (list.length===1?'':'s');
+  document.getElementById('statPending').innerText = pending;
+  document.getElementById('statApproved').innerText = approved;
+  document.getElementById('statRejected').innerText = rejected;
+
+  document.getElementById('recentTitle').innerText = currentUser.role==='manager' ? 'Recent expenses — all employees' : 'Your recent expenses';
+
+  const recent = [...list].sort((a,b)=> b.id - a.id).slice(0,5);
+  const body = document.getElementById('recentBody');
+  body.innerHTML = recent.length ? recent.map(e=>`
+    <tr>
+      <td>${e.type}</td>
+      <td>${nameFor(e.username)}</td>
+      <td class="mono">${fmt(e.amount)}</td>
+      <td>${statusBadge(e.status)}</td>
+      <td>${paymentBadge(e.payment)}</td>
+      <td>${e.date}</td>
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="6">No expenses filed yet.</td></tr>`;
+}
+
+function renderExpenses(){
+  const list = [...visibleExpenses()].sort((a,b)=> b.id - a.id);
+  document.getElementById('expensesTitle').innerText = currentUser.role==='manager' ? 'All employee expenses' : 'Your expenses';
+  const body = document.getElementById('expenseBody');
+  body.innerHTML = list.length ? list.map(e=>`
+    <tr>
+      <td>${e.type}</td>
+      <td>${nameFor(e.username)}</td>
+      <td class="mono">${fmt(e.amount)}</td>
+      <td>${e.description}</td>
+      <td>${statusBadge(e.status)}</td>
+      <td>${paymentBadge(e.payment)}</td>
+      <td>${e.date}</td>
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="7">No expenses to show yet — file your first one.</td></tr>`;
+}
+
+function renderApprovals(){
+  if(currentUser.role !== 'manager') return;
+  const pending = expenses.filter(e=>e.status==='Pending').sort((a,b)=>b.id-a.id);
+  document.getElementById('approvalsCount').innerText = pending.length + ' pending';
+  const body = document.getElementById('approvalsBody');
+  body.innerHTML = pending.length ? pending.map(e=>`
+    <tr>
+      <td>${nameFor(e.username)}</td>
+      <td>${e.type}</td>
+      <td class="mono">${fmt(e.amount)}</td>
+      <td>${e.description}</td>
+      <td>${e.date}</td>
+      <td>
+        <div class="action-row">
+          <button class="btn btn-emerald btn-sm" onclick="decide(${e.id},'Approved')"><i class="bi bi-check-lg"></i> Approve</button>
+          <button class="btn btn-danger-ghost btn-sm" onclick="decide(${e.id},'Rejected')"><i class="bi bi-x-lg"></i> Reject</button>
+        </div>
+      </td>
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="6">Nothing waiting on you — the queue is clear.</td></tr>`;
+}
+
+function renderPayments(){
+  if(currentUser.role !== 'manager') return;
+  const approved = expenses.filter(e=>e.status==='Approved').sort((a,b)=>b.id-a.id);
+  const unpaidCount = approved.filter(e=>e.payment==='Unpaid').length;
+  document.getElementById('paymentsCount').innerText = unpaidCount + ' unpaid';
+  const body = document.getElementById('paymentsBody');
+  body.innerHTML = approved.length ? approved.map(e=>`
+    <tr>
+      <td>${nameFor(e.username)}</td>
+      <td>${e.type}</td>
+      <td class="mono">${fmt(e.amount)}</td>
+      <td>${e.date}</td>
+      <td>${paymentBadge(e.payment)}</td>
+      <td>${e.payment==='Unpaid'
+          ? `<button class="btn btn-primary btn-sm" onclick="markPaid(${e.id})"><i class="bi bi-cash"></i> Mark as paid</button>`
+          : `<span class="mono" style="font-size:12.5px;color:var(--ink-soft)">Settled</span>`}</td>
+    </tr>`).join('') : `<tr class="empty-row"><td colspan="6">No approved claims yet.</td></tr>`;
+}
+
+function renderReports(){
+  const list = visibleExpenses();
+  const cats = {};
+  list.forEach(e=> cats[e.type] = (cats[e.type]||0) + Number(e.amount));
+  const maxCat = Math.max(1, ...Object.values(cats));
+  const catEl = document.getElementById('categoryChart');
+  const catEntries = Object.entries(cats).sort((a,b)=>b[1]-a[1]);
+  catEl.innerHTML = catEntries.length ? catEntries.map(([k,v])=>`
+    <div class="bar-row">
+      <div class="lbl">${k}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(v/maxCat*100).toFixed(0)}%"></div></div>
+      <div class="amt">${fmt(v)}</div>
+    </div>`).join('') : `<div class="empty-state" style="padding:20px"><p>No data to chart yet.</p></div>`;
+
+  const statuses = ['Pending','Approved','Rejected'];
+  const colors = {Pending:'var(--amber)', Approved:'var(--emerald)', Rejected:'var(--brick)'};
+  const counts = statuses.map(s=> list.filter(e=>e.status===s).length);
+  const maxS = Math.max(1, ...counts);
+  const stEl = document.getElementById('statusChart');
+  stEl.innerHTML = statuses.map((s,i)=>`
+    <div class="bar-row">
+      <div class="lbl">${s}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(counts[i]/maxS*100).toFixed(0)}%;background:${colors[s]}"></div></div>
+      <div class="amt">${counts[i]}</div>
+    </div>`).join('');
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
 function addExpense(){
-    let t = document.getElementById("etype").value;
-    let a = parseFloat(document.getElementById("eamount").value);
-    let d = document.getElementById("edesc").value.trim();
-    
-    if(!a || a <= 0) { alert("Please enter a valid expense financial amount."); return; }
-    
-    let targetPayload = {
-        id: 'exp_' + Date.now(),
-        user: currentUser,
-        type: t,
-        amount: a,
-        desc: d || 'N/A',
-        status: 'Pending'
-    };
-    
-    expenses.push(targetPayload);
-    syncStorage();
-    
-    document.getElementById("eamount").value = "";
-    document.getElementById("edesc").value = "";
-    alert("Expense Claim submitted successfully!");
-    dash('expenses');
+  const type = document.getElementById('etype').value;
+  const amount = document.getElementById('eamount').value;
+  const desc = document.getElementById('edesc').value.trim();
+  const date = document.getElementById('edate').value || new Date().toISOString().slice(0,10);
+  const err = document.getElementById('createErr');
+
+  if(!type || !amount || Number(amount) <= 0 || !desc){
+    err.style.display='block';
+    return;
+  }
+  err.style.display='none';
+
+  expenses.push({
+    id: nextId++,
+    username: currentUser.username,
+    type, amount:Number(amount), description:desc, date,
+    status:'Pending', payment:'Unpaid'
+  });
+
+  document.getElementById('eamount').value='';
+  document.getElementById('edesc').value='';
+  document.getElementById('edate').value='';
+
+  toast('Expense submitted for approval', 'ok');
+  dash('expenses');
 }
 
-function updateStatus(id, newStatus) {
-    expenses = expenses.map(item => {
-        if(item.id === id) item.status = newStatus;
-        return item;
-    });
-    syncStorage();
-    renderAllEngineData();
+function decide(id, status){
+  const e = expenses.find(x=>x.id===id);
+  if(!e) return;
+  e.status = status;
+  toast(`Claim ${status.toLowerCase()}`, status==='Approved' ? 'ok' : 'bad');
+  renderAll();
 }
 
-function syncStorage() {
-    localStorage.setItem('expenses_array', JSON.stringify(expenses));
+function markPaid(id){
+  const e = expenses.find(x=>x.id===id);
+  if(!e) return;
+  e.payment = 'Paid';
+  toast('Marked as paid', 'ok');
+  renderAll();
 }
 
-function renderAllEngineData() {
-    // 1. Recalculate Metrics counters
-    let totalValue = 0, pendingCount = 0, approvedCount = 0, rejectedCount = 0;
-    let categoryData = {};
+function saveSettings(){
+  const name = document.getElementById('setName').value.trim();
+  const pass = document.getElementById('setPass').value;
+  if(!name) return;
+  currentUser.name = name;
+  if(pass) currentUser.password = pass;
+  document.getElementById('sideUserName').innerText = currentUser.name;
+  document.getElementById('topUserName').innerText = currentUser.name;
+  document.getElementById('topAvatar').innerText = currentUser.name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+  document.getElementById('setPass').value='';
+  toast('Profile updated', 'ok');
+}
 
-    expenses.forEach(item => {
-        if(item.user === currentUser || currentUser === 'admin') {
-            totalValue += item.amount;
-            if(item.status === 'Pending') pendingCount++;
-            else if(item.status === 'Approved' || item.status === 'Paid') approvedCount++;
-            else if(item.status === 'Rejected') rejectedCount++;
-        }
-        categoryData[item.type] = (categoryData[item.type] || 0) + item.amount;
-    });
-
-    document.getElementById("statTotal").innerText = "₹" + totalValue.toLocaleString('en-IN');
-    document.getElementById("statPending").innerText = pendingCount;
-    document.getElementById("statApproved").innerText = approvedCount;
-    document.getElementById("statRejected").innerText = rejectedCount;
-
-    // 2. Personal/User Expense Table Rows
-    let expBodyHTML = "";
-    let myExpenses = expenses.filter(x => x.user === currentUser);
-    if(myExpenses.length === 0) {
-        expBodyHTML = `<tr><td colspan="4" class="text-center text-muted py-3">No submitted expenses found.</td></tr>`;
-    } else {
-        myExpenses.forEach(item => {
-            let badgeClass = item.status==='Pending'?'bg-warning':item.status==='Rejected'?'bg-danger':'bg-success';
-            expBodyHTML += `<tr>
-                <td><strong>${item.type}</strong></td>
-                <td>₹${item.amount.toLocaleString('en-IN')}</td>
-                <td>${item.desc}</td>
-                <td><span class="badge ${badgeClass}">${item.status}</span></td>
-            </tr>`;
-        });
-    }
-    document.getElementById("expenseBody").innerHTML = expBodyHTML;
-
-    // 3. Approvals Matrix Parsing Engine
-    let appBodyHTML = "";
-    let pendingApprovals = expenses.filter(x => x.status === 'Pending');
-    if(pendingApprovals.length === 0) {
-        appBodyHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No pending manager confirmation workflows found.</td></tr>`;
-    } else {
-        pendingApprovals.forEach(item => {
-            appBodyHTML += `<tr>
-                <td><code>${item.user}</code></td>
-                <td>${item.type}</td>
-                <td>₹${item.amount}</td>
-                <td>${item.desc}</td>
-                <td>
-                    <button class="btn btn-sm btn-success me-1" onclick="updateStatus('${item.id}', 'Approved')"><i class="bi bi-check"></i></button>
-                    <button class="btn btn-sm btn-danger" onclick="updateStatus('${item.id}', 'Rejected')"><i class="bi bi-x"></i></button>
-                </td>
-            </tr>`;
-        });
-    }
-    document.getElementById("approvalsBody").innerHTML = appBodyHTML;
-
-    // 4. Payments Handling Matrix 
-    let payBodyHTML = "";
-    let approvedPayments = expenses.filter(x => x.status === 'Approved' || x.status === 'Paid');
-    if(approvedPayments.length === 0) {
-        payBodyHTML = `<tr><td colspan="5" class="text-center text-muted py-3">No outstanding approved line items queued for distribution.</td></tr>`;
-    } else {
-        approvedPayments.forEach(item => {
-            let isPaid = item.status === 'Paid';
-            payBodyHTML += `<tr>
-                <td><code>${item.user}</code></td>
-                <td>${item.type}</td>
-                <td>₹${item.amount}</td>
-                <td><span class="badge ${isPaid?'bg-secondary':'bg-success'}">${item.status}</span></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary" ${isPaid?'disabled':''} onclick="updateStatus('${item.id}', 'Paid')">
-                        ${isPaid ? 'Settled' : 'Disburse Cash'}
-                    </button>
-                </td>
-            </tr>`;
-        });
-    }
-    document.getElementById("paymentsBody").innerHTML = payBodyHTML;
-
-    // 5. Dynamic Metrics Reports Component UI Builder
-    let reportElement = document.getElementById("reportSummary");
-    if(Object.keys(categoryData).length === 0) {
-        reportElement.innerHTML = `<span class="text-muted">Insufficient ledger entry details.</span>`;
-    } else {
-        let listHTML = `<ul class="list-group">`;
-        for (const [cat, val] of Object.entries(categoryData)) {
-            listHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                ${cat} <span class="badge bg-primary rounded-pill">₹${val.toLocaleString('en-IN')}</span>
-            </li>`;
-        }
-        listHTML += `</ul>`;
-        reportElement.innerHTML = listHTML;
-    }
+/* =========================================================
+   TOAST
+========================================================= */
+let toastTimer;
+function toast(msg, kind){
+  const t = document.getElementById('toast');
+  t.className = 'toast show ' + (kind||'');
+  t.innerHTML = `<i class="bi ${kind==='ok'?'bi-check-circle':kind==='bad'?'bi-exclamation-circle':'bi-info-circle'}"></i> ${msg}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
